@@ -1,4 +1,4 @@
 /.metadata/
-AoC_Day01_1/.settings
-AoC_Day01_1/.classpath
-AoC_Day01_1/.project
+*/.settings
+*/.project
+*.classpath
