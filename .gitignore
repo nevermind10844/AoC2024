@@ -4,3 +4,4 @@
 *.classpath
 */ext/*.txt
 *.project
+*/bin
