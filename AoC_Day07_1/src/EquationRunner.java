@@ -12,13 +12,10 @@ public class EquationRunner extends Thread {
 	private int tryCount;
 	private Context engine;
 	private String templateString;
-	
-	private boolean done;
 
 	private Map<String, BigInteger> resultMap;
 
 	public EquationRunner(Equation eq, int multiplier, Context engine) {
-		this.done = false;
 		this.engine = engine;
 		this.eq = eq;
 		this.tryCount = this.eq.operands.size() * multiplier;
@@ -50,7 +47,7 @@ public class EquationRunner extends Thread {
 						bigIntValue = result.as(BigInteger.class);
 					}
 					
-//					System.out.println(bigIntValue);
+					//System.out.println(bigIntValue);
 					
 					this.resultMap.put(expression, bigIntValue);
 				} catch (ClassCastException cce) {
@@ -58,7 +55,6 @@ public class EquationRunner extends Thread {
 				}
 			}
 		}
-		this.done = true;
 	}
 
 	private String createExpression() {
@@ -82,10 +78,6 @@ public class EquationRunner extends Thread {
 		this.resultMap.entrySet().stream()
 				.forEach((entry) -> sb.append("%s: %d\n".formatted(entry.getClass(), entry.getValue())));
 		return sb.toString();
-	}
-	
-	public boolean isDone() {
-		return this.done;
 	}
 
 }
