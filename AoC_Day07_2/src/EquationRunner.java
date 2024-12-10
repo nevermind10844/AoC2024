@@ -1,6 +1,4 @@
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.List;
 
 public class EquationRunner extends Thread {
@@ -9,8 +7,6 @@ public class EquationRunner extends Thread {
 	private List<List<OperatorEnum>> permutations;
 
 	private boolean valid;
-
-//	private Map<String, BigInteger> resultMap;
 
 	public EquationRunner(Equation eq, List<List<OperatorEnum>> permutations) {
 		this.valid = false;
@@ -36,13 +32,8 @@ public class EquationRunner extends Thread {
 				case TIMES:
 					left = left.multiply(right);
 					break;
-//				case DIVIDE:
-//					left = left.divide(right, 20, RoundingMode.HALF_UP);
 				}
-				
-//				System.out.println(left.toString());
 			}
-			
 			
 			if(result.equals(left)) {
 				this.valid = true;

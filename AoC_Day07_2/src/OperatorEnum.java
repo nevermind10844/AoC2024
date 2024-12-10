@@ -37,7 +37,7 @@ public enum OperatorEnum {
 		for (OperatorEnum operator : input) {
 			current.add(operator);
 			generatePermutations(input, length, current, results);
-			current.remove(current.size() - 1); // Backtrack
+			current.remove(current.size() - 1);
 		}
 	}
 }
