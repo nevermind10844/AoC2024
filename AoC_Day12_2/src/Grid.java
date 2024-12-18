@@ -208,4 +208,8 @@ public class Grid {
 		return fromList(regionTiles, 0);
 	}
 	
+	public static boolean align(Tile a, Tile b) {
+		return a.getX() == b.getX() || a.getY() == b.getY();
+	}
+	
 }
