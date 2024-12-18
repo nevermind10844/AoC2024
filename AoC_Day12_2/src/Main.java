@@ -11,7 +11,7 @@ public class Main {
 //		lines.forEach(System.out::println);
 
 		Grid plot = Grid.parse(lines);
-		System.out.println(plot.highlightSymbol('L'));
+//		System.out.println(plot.highlightSymbol('L'));
 
 		Map<Integer, List<Tile>> regionMap = new HashMap<>();
 		List<Tile> assigned = new ArrayList<>(plot.getWidth() * plot.getHeight());
@@ -34,13 +34,51 @@ public class Main {
 
 		for (Map.Entry<Integer, List<Tile>> set : regionMap.entrySet()) {
 			List<Tile> regionTiles = set.getValue();
-			Tile start = regionTiles.get(0);
-			Tile leftTile = plot.getWesternNeighbor(start);
-			if (leftTile != null) {
-				while (leftTile != null && regionTiles.contains(leftTile))) {
+			Grid region = Grid.fromList(regionTiles, 1);
+			List<Tile> potentialBorders = region.findTiles(TileType.EMPTY);
+			for (Tile tile : potentialBorders) {
+				List<Tile> neighbors = region.getNeighbors(tile);
+				if (neighbors.stream().filter(neighbor -> neighbor.getType().equals(TileType.OCCUPIED)).count() <= 0) {
+					tile.setType(TileType.DISCARDED);
+					tile.setSymbol(TileType.DISCARDED.getTileChar());
 				}
 			}
 
+			List<Tile> fields = region.findTiles(TileType.OCCUPIED);
+			for (Tile tile : fields) {
+				List<Tile> neighbors = region.getNeighbors(tile);
+				if (neighbors.stream().filter(neighbor -> neighbor.getType().equals(TileType.EMPTY)).count() <= 0) {
+					tile.setType(TileType.DISCARDED);
+					tile.setSymbol(TileType.DISCARDED.getTileChar());
+				}
+			}
+
+			List<Tile> borderTiles = region.findTiles(TileType.EMPTY);
+			for (Tile tile : borderTiles) {
+				tile.setType(TileType.BORDER);
+				tile.setSymbol(TileType.BORDER.getTileChar());
+			}
+			
+			List<Border> borderList = new ArrayList<Border>();
+
+			List<Tile> plotTiles = region.findTiles(TileType.OCCUPIED);
+			for (Tile tile : plotTiles) {
+				List<Tile> neighborTiles = region.getNeighbors(tile);
+				for (Tile t : neighborTiles) {
+					if(t.getType().equals(TileType.BORDER)) {
+						Border b = new Border();
+						b.setPlotTile(tile);
+						b.setBorderTile(t);
+						borderList.add(b);
+					}
+				}
+			}
+			
+			borderList.forEach(System.out::println);
+			
+			
+
+			System.out.println(region);
 		}
 
 	}

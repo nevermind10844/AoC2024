@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.IntStream;
 
 public class Grid {
 	private List<Tile> tileList;
@@ -58,16 +59,16 @@ public class Grid {
 		List<Tile> neighbours = new ArrayList<>();
 
 		Tile neighbor = this.getNorthernNeighbor(tile);
-		if(neighbor != null)
+		if (neighbor != null)
 			neighbours.add(neighbor);
 		neighbor = this.getEasternNeighbor(tile);
-		if(neighbor != null)
+		if (neighbor != null)
 			neighbours.add(neighbor);
 		neighbor = this.getSouthernNeighbor(tile);
-		if(neighbor != null)
+		if (neighbor != null)
 			neighbours.add(neighbor);
 		neighbor = this.getWesternNeighbor(tile);
-		if(neighbor != null)
+		if (neighbor != null)
 			neighbours.add(neighbor);
 
 		return neighbours;
@@ -125,7 +126,7 @@ public class Grid {
 				try {
 					type = TileType.tryParse(t.getSymbol());
 				} catch (NoSuchElementException e) {
-					type = TileType.EMPTY;
+					type = TileType.OCCUPIED;
 				}
 				t.setType(type);
 				map.addTile(t);
@@ -152,7 +153,7 @@ public class Grid {
 		StringBuilder sb = new StringBuilder();
 		for (int y = 0; y < this.height; y++) {
 			for (int x = 0; x < this.width; x++) {
-				sb.append(this.getTile(x, y).getSymbol());
+				sb.append(this.getTile(x, y).getType().getTileChar());
 			}
 			sb.append("\n");
 		}
@@ -165,7 +166,7 @@ public class Grid {
 			for (int x = 0; x < this.width; x++) {
 				Tile t = this.getTile(x, y);
 				if (symbol == t.getSymbol())
-					sb.append(this.getTile(x, y).getSymbol());
+					sb.append(this.getTile(x, y).getType().getTileChar());
 				else
 					sb.append(TileType.EMPTY.getTileChar());
 			}
@@ -173,4 +174,38 @@ public class Grid {
 		}
 		return sb.toString();
 	}
+
+	public static Grid fromList(List<Tile> regionTiles, int padding) {
+		int xMin = regionTiles.stream().mapToInt(Tile::getX).min().orElse(0);
+		int xMax = regionTiles.stream().mapToInt(Tile::getX).max().orElse(0);
+
+		int yMin = regionTiles.stream().mapToInt(Tile::getY).min().orElse(0);
+		int yMax = regionTiles.stream().mapToInt(Tile::getY).max().orElse(0);
+
+		int xOffset = xMin - padding;
+		int yOffset = yMin - padding;
+
+		Grid g = new Grid(xMax - xMin + 1 + (2 * padding), yMax - yMin + 1 + (2 * padding));
+
+		for (int y = 0; y < g.getHeight(); y++) {
+			for (int x = 0; x < g.getWidth(); x++) {
+				int currentX = x;
+				int currentY = y;
+				Tile t = regionTiles.stream()
+						.filter(tile -> tile.getX() == currentX + xOffset && tile.getY() == currentY + yOffset)
+						.findFirst().orElse(new Tile(x, y));
+				Tile properTile = new Tile(currentX, currentY);
+				properTile.setSymbol(t.getSymbol());
+				properTile.setType(t.getType());
+				g.addTile(properTile);
+			}
+		}
+
+		return g;
+	}
+	
+	public static Grid fromList(List<Tile> regionTiles) {
+		return fromList(regionTiles, 0);
+	}
+	
 }

@@ -2,7 +2,11 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public enum TileType {
-	EMPTY('.');
+	EMPTY('.'),
+	BORDER('*'),
+	DISCARDED(' '),
+	OCCUPIED('#'),
+	CORNER('+');
 	
 	private char tileChar;
 	
