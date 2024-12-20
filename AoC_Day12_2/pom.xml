@@ -5,6 +5,11 @@
   <version>0.0.1-SNAPSHOT</version>
 
   <dependencies>
+    <dependency>
+        <groupId>org.jksoft.utils</groupId>
+        <artifactId>inputreader</artifactId>
+        <version>1.0.0</version>
+    </dependency>
   </dependencies>
 
   <build>

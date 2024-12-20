@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.IntStream;
 
 public class Grid {
 	private List<Tile> tileList;
@@ -153,7 +152,7 @@ public class Grid {
 		StringBuilder sb = new StringBuilder();
 		for (int y = 0; y < this.height; y++) {
 			for (int x = 0; x < this.width; x++) {
-				sb.append(this.getTile(x, y).getType().getTileChar());
+				sb.append(this.getTile(x, y).getSymbol());
 			}
 			sb.append("\n");
 		}
@@ -208,7 +207,7 @@ public class Grid {
 		return fromList(regionTiles, 0);
 	}
 	
-	public static boolean align(Tile a, Tile b) {
+	public static boolean isAligned(Tile a, Tile b) {
 		return a.getX() == b.getX() || a.getY() == b.getY();
 	}
 	
