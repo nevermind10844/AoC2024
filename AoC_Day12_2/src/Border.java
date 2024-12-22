@@ -2,6 +2,7 @@
 public class Border {
 	private Tile plotTile;
 	private Tile borderTile;
+	private GridVector direction;
 
 	public Tile getPlotTile() {
 		return plotTile;
@@ -19,12 +20,21 @@ public class Border {
 		this.borderTile = borderTile;
 	}
 	
+	public GridVector getDirection() {
+		return direction;
+	}
+
+	public void setDirection(GridVector direction) {
+		this.direction = direction;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(plotTile);
 		sb.append(" | ");
 		sb.append(borderTile);
+		
 		return sb.toString();
 	}
 

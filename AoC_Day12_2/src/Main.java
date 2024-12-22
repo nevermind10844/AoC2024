@@ -8,7 +8,7 @@ import org.jksoft.utils.inputreader.InputReader;
 public class Main {
 
 	public static void main(String[] args) {
-		List<String> lines = InputReader.readTestInput(3);
+		List<String> lines = InputReader.readInput();
 //		lines.forEach(System.out::println);
 
 		Grid plot = Grid.parse(lines);
@@ -48,17 +48,6 @@ public class Main {
 				}
 			}
 			
-			System.out.println(region);
-
-//			List<Tile> fields = region.findTiles(TileType.OCCUPIED);
-//			for (Tile tile : fields) {
-//				List<Tile> neighbors = region.getNeighbors(tile);
-//				if (neighbors.stream().filter(neighbor -> neighbor.getType().equals(TileType.EMPTY)).count() <= 0) {
-//					tile.setType(TileType.DISCARDED);
-//					tile.setSymbol(TileType.DISCARDED.getTileChar());
-//				}
-//			}
-
 			List<Tile> borderTiles = region.findTiles(TileType.EMPTY);
 			for (Tile tile : borderTiles) {
 				tile.setType(TileType.BORDER);
@@ -84,10 +73,6 @@ public class Main {
 			List<List<Border>> borderChains = new ArrayList<>();
 			
 			while(borderList.size() > 0) {
-//				borderList.forEach(System.out::println);
-	
-//				System.out.println(region);
-	
 				List<Border> chainedBorders = new ArrayList<>();
 				Border startBorder = borderList.get(0);
 				chainBorders(chainedBorders, startBorder, borderList, region);
@@ -95,14 +80,9 @@ public class Main {
 				borderList.removeAll(chainedBorders);
 
 				borderChains.add(chainedBorders);
-				
-				System.out.println(chainedBorders);
 			}
 			
 			int regionResult = 0;
-			
-//			if(set.getKey() == 337)
-//				System.out.println(region);
 			
 			for (List<Border> chain : borderChains) {
 				int chainResult = 0;
@@ -134,9 +114,7 @@ public class Main {
 			
 			regionResult *= plotTiles.size();
 			
-//			System.out.println(regionResult);
 			plotResult += regionResult;
-
 		}
 		
 		System.out.println(plotResult);
@@ -153,9 +131,9 @@ public class Main {
 	 * @param region
 	 */
 	public static void chainBorders(List<Border> chainedBorders, Border nextBorder, List<Border> borderList, Grid region) {
-		if(chainedBorders.contains(nextBorder))
+		if(chainedBorders.contains(nextBorder)) {
 			return;
-		else {
+		} else {
 			chainedBorders.add(nextBorder);
 			System.out.println(nextBorder);
 			System.out.println(region);
@@ -177,8 +155,10 @@ public class Main {
 						&& !b.equals(nextBorder)
 						&& !Grid.isAligned(b.getBorderTile(), nextBorder.getBorderTile())
 						&& !chainedBorders.contains(b)
-						&& !isInverted(GridVector.fromTiles(nextBorder.getPlotTile(), nextBorder.getBorderTile()), GridVector.fromTiles(b.getPlotTile(), b.getBorderTile())))
+						&& !isDiagonalChoke(nextBorder, b, borderList))
 				.toList();
+		
+		
 
 		if (samePlotBorders.size() > 0) {
 			chainBorders(chainedBorders, samePlotBorders.get(0), borderList, region);
@@ -197,8 +177,7 @@ public class Main {
 					.filter(b -> b.getBorderTile().equals(nextBorder.getBorderTile())
 							&& !b.equals(nextBorder)
 							&& !Grid.isAligned(b.getPlotTile(), nextBorder.getPlotTile())
-							&& !chainedBorders.contains(b)
-							&& !isInverted(GridVector.fromTiles(nextBorder.getPlotTile(), nextBorder.getBorderTile()), GridVector.fromTiles(b.getPlotTile(), b.getBorderTile())))
+							&& !chainedBorders.contains(b))
 					.toList();
 			if(sameBorderBorders.size() > 0) {
 				chainBorders(chainedBorders, sameBorderBorders.get(0), borderList, region);
@@ -218,8 +197,7 @@ public class Main {
 				List<Border> neighboringBorders = borderList.stream().filter(b -> plotNeighbors.contains(b.getPlotTile())).toList();
 				List<Border> maybeBorders = neighboringBorders.stream()
 						.filter(b -> region.getNeighbors(nextBorder.getBorderTile()).contains(b.getBorderTile())
-								&& !chainedBorders.contains(b)
-								&& !isInverted(GridVector.fromTiles(nextBorder.getPlotTile(), nextBorder.getBorderTile()), GridVector.fromTiles(b.getPlotTile(), b.getBorderTile())))
+								&& !chainedBorders.contains(b))
 						.toList();
 				if(maybeBorders.size() > 0) {
 					chainBorders(chainedBorders, maybeBorders.get(0), borderList, region);
@@ -228,8 +206,22 @@ public class Main {
 		}
 	}
 	
-	public static boolean isInverted(GridVector v1, GridVector v2) {
-		return GridVector.copyInverted(v1).equals(v2);
+	public static boolean isDiagonalChoke(Border a, Border b, List<Border> borderList) {
+		List<Border> newBordersBorders = borderList.stream()
+				.filter(border -> border.getBorderTile().equals(b.getBorderTile())
+						&& !border.equals(b)).toList();
+		for (Border border : newBordersBorders) {
+			Tile plotTile = border.getPlotTile();
+			List<Border> relevantBorder = borderList.stream()
+					.filter(relBorder -> relBorder.getPlotTile().equals(plotTile)
+							&& relBorder.getBorderTile().equals(a.getBorderTile()))
+					.toList();
+			if(relevantBorder.size() > 0) {
+				System.err.println(relevantBorder);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static void explore(int regionId, Tile current, List<Tile> assigned, Grid plot,
@@ -245,5 +237,5 @@ public class Main {
 			}
 		}
 	}
-
+	
 }
