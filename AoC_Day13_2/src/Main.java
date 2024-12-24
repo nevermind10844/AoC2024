@@ -71,15 +71,18 @@ public class Main {
 			long prioTarget = xValueHasPrio ? targetX : targetY;
 			
 			long trailingValue = xValueHasPrio ? bButtonX : bButtonY;
+			
 			long trailingTarget = xValueHasPrio ? targetY : targetX;
-
-			for (long aButtonValue = 0; aButtonValue <= prioTarget; aButtonValue+=prioValue) {
-				long remainder = prioTarget - aButtonValue;
+			
+			System.out.println(trailingTarget);
+			
+			for (long buttonValue = 0; buttonValue <= prioTarget; buttonValue+=prioValue) {
+				long remainder = prioTarget - buttonValue;
 				if (remainder % trailingValue == 0) {
 					long bCount = remainder / trailingValue;
-					long aCount = aButtonValue / prioValue;
-					long permYValue = aCount * aButtonY + bCount * bButtonY;
-					if (trailingTarget == permYValue) {
+					long aCount = buttonValue / prioValue;
+					long currentValue = aCount * prioValue + bCount * trailingValue;
+					if (trailingTarget == currentValue) {
 						System.out.println(aCount + " ?? " + bCount);
 						long permCost = aCount * aButtonCost + bCount * bButtonCost;
 						if (permCost < cheapest) {
