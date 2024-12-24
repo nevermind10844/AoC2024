@@ -1,3 +1,7 @@
-base: 			18m
-+=aButtonX		11m	
-value prio		 4m		118679050709 !! 103199174542	->		459236326669
+base: 				18m
++=aButtonX			11m		118679050709 !! 103199174542	->		459236326669
+value prio		 	4m		118679050709 !! 103199174542	->		459236326669
+early cost cap but	
+without value prio	3m		118679050709 ?? 103199174542	->		459236326669
+early cost cap with
+valur prop not working yet!

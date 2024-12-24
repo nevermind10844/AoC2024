@@ -62,25 +62,37 @@ public class Main {
 			long bButtonCost = machine.getButton('b').getCost();
 
 			long cheapest = Long.MAX_VALUE;
+			
+			boolean valueFound = false;
+			
+			boolean xValueHasPrio = aButtonX > aButtonY;
+			
+			long prioValue	= xValueHasPrio ? aButtonX : aButtonY;
+			long prioTarget = xValueHasPrio ? targetX : targetY;
+			
+			long trailingValue = xValueHasPrio ? bButtonX : bButtonY;
+			long trailingTarget = xValueHasPrio ? targetY : targetX;
 
-			for (long aButtonValue = 0; aButtonValue <= targetX; aButtonValue+=aButtonX) {
-				long remainder = targetX - aButtonValue;
-				if (remainder % bButtonX == 0) {
-					long bCount = remainder / bButtonX;
-					long aCount = aButtonValue / aButtonX;
+			for (long aButtonValue = 0; aButtonValue <= prioTarget; aButtonValue+=prioValue) {
+				long remainder = prioTarget - aButtonValue;
+				if (remainder % trailingValue == 0) {
+					long bCount = remainder / trailingValue;
+					long aCount = aButtonValue / prioValue;
 					long permYValue = aCount * aButtonY + bCount * bButtonY;
-					if (targetY == permYValue) {
+					if (trailingTarget == permYValue) {
 						System.out.println(aCount + " ?? " + bCount);
 						long permCost = aCount * aButtonCost + bCount * bButtonCost;
 						if (permCost < cheapest) {
 							System.out.println(aCount + " !! " + bCount);
 							cheapest = permCost;
+							valueFound = true;
+							break;
 						}
 					}
 				}
 			}
 
-			if (cheapest == Long.MAX_VALUE)
+			if (!valueFound)
 				cheapest = 0;
 
 			System.out.println(cheapest);
