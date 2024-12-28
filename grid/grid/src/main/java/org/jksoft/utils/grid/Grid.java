@@ -1,3 +1,5 @@
+package org.jksoft.utils.grid;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -6,11 +8,21 @@ public class Grid {
 	private List<Tile> tileList;
 	private int width;
 	private int height;
+	
+	private MappingConfiguration configuration;
 
 	public Grid(int width, int height) {
 		this.tileList = new ArrayList<>();
 		this.width = width;
 		this.height = height;
+		this.configuration = null;
+	}
+	
+	public Grid(int width, int height, MappingConfiguration configuration) {
+		this.tileList = new ArrayList<>();
+		this.width = width;
+		this.height = height;
+		this.configuration = configuration;
 	}
 
 	public void addTile(Tile tile) {
@@ -46,10 +58,6 @@ public class Grid {
 		return this.height;
 	}
 
-	public int getLength() {
-		return this.width * this.height;
-	}
-
 	public Tile findTile(TileType type) {
 		return this.tileList.stream().filter(tile -> tile.getType().equals(type)).findFirst().orElseThrow();
 	}
@@ -58,86 +66,23 @@ public class Grid {
 		return this.tileList.stream().filter(tile -> tile.getType().equals(type)).toList();
 	}
 
-	public boolean hasNeighbors(Tile tile) {
-		return this.getNeighbors(tile).size() > 0;
-	}
-
 	public List<Tile> getNeighbors(Tile tile) {
 		List<Tile> neighbours = new ArrayList<>();
 
 		Tile neighbor = this.getNorthernNeighbor(tile);
-		if (neighbor != null && neighbor.getType().equals(TileType.HASH))
+		if (neighbor != null)
 			neighbours.add(neighbor);
 		neighbor = this.getEasternNeighbor(tile);
-		if (neighbor != null && neighbor.getType().equals(TileType.HASH))
+		if (neighbor != null)
 			neighbours.add(neighbor);
 		neighbor = this.getSouthernNeighbor(tile);
-		if (neighbor != null && neighbor.getType().equals(TileType.HASH))
+		if (neighbor != null)
 			neighbours.add(neighbor);
 		neighbor = this.getWesternNeighbor(tile);
-		if (neighbor != null && neighbor.getType().equals(TileType.HASH))
+		if (neighbor != null)
 			neighbours.add(neighbor);
 
 		return neighbours;
-	}
-
-	public boolean hasDiagonalNeighbor(Tile tile) {
-		List<Tile> diagonalNeighbors = new ArrayList<>();
-
-		Tile neighbor = this.getNorthEasternNeighbor(tile);
-		if (neighbor != null && neighbor.getType().equals(TileType.HASH))
-			diagonalNeighbors.add(neighbor);
-		neighbor = this.getSouthEasternNeighbor(tile);
-		if (neighbor != null && neighbor.getType().equals(TileType.HASH))
-			diagonalNeighbors.add(neighbor);
-		neighbor = this.getSouthWesternNeighbor(tile);
-		if (neighbor != null && neighbor.getType().equals(TileType.HASH))
-			diagonalNeighbors.add(neighbor);
-		neighbor = this.getNorthWesternNeighbor(tile);
-		if (neighbor != null && neighbor.getType().equals(TileType.HASH))
-			diagonalNeighbors.add(neighbor);
-
-		return diagonalNeighbors.size() > 0;
-	}
-
-	public Tile getNorthEasternNeighbor(Tile tile) {
-		Tile neighbor = null;
-		try {
-			neighbor = this.getTile(tile.getX() + 1, tile.getY() - 1);
-		} catch (IndexOutOfBoundsException e) {
-			// System.out.println(e.getMessage());
-		}
-		return neighbor;
-	}
-
-	public Tile getSouthEasternNeighbor(Tile tile) {
-		Tile neighbor = null;
-		try {
-			neighbor = this.getTile(tile.getX() + 1, tile.getY() + 1);
-		} catch (IndexOutOfBoundsException e) {
-			// System.out.println(e.getMessage());
-		}
-		return neighbor;
-	}
-
-	public Tile getSouthWesternNeighbor(Tile tile) {
-		Tile neighbor = null;
-		try {
-			neighbor = this.getTile(tile.getX() - 1, tile.getY() + 1);
-		} catch (IndexOutOfBoundsException e) {
-			// System.out.println(e.getMessage());
-		}
-		return neighbor;
-	}
-
-	public Tile getNorthWesternNeighbor(Tile tile) {
-		Tile neighbor = null;
-		try {
-			neighbor = this.getTile(tile.getX() - 1, tile.getY() - 1);
-		} catch (IndexOutOfBoundsException e) {
-			// System.out.println(e.getMessage());
-		}
-		return neighbor;
 	}
 
 	public Tile getNorthernNeighbor(Tile tile) {
@@ -180,19 +125,26 @@ public class Grid {
 		return neighbor;
 	}
 
-	public static Grid parse(List<String> lines) {
+	public static Grid parse(List<String> lines, MappingConfiguration configuration) {
 		int width = lines.get(0).length();
 		int height = lines.size();
-		Grid map = new Grid(width, height);
+		Grid map = new Grid(width, height, configuration);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				Tile t = new Tile(x, y);
 				t.setSymbol(lines.get(y).charAt(x));
 				TileType type = null;
 				try {
-					type = TileType.tryParse(t.getSymbol());
-				} catch (NoSuchElementException e) {
-					type = TileType.HASH;
+					type = configuration.getMapping(t.getSymbol());
+				} catch (NoSuchElementException unused) {
+					
+				}
+				if (type == null) {
+					try {
+						type = TileType.tryParse(t.getSymbol());
+					} catch (NoSuchElementException e) {
+						type = TileType.HASH;
+					}
 				}
 				t.setType(type);
 				map.addTile(t);
@@ -234,7 +186,7 @@ public class Grid {
 				if (symbol == t.getSymbol())
 					sb.append(this.getTile(x, y).getType().getTileChar());
 				else
-					sb.append(" ");
+					sb.append(TileType.EMPTY.getTileChar());
 			}
 			sb.append("\n");
 		}
@@ -263,7 +215,6 @@ public class Grid {
 				Tile properTile = new Tile(currentX, currentY);
 				properTile.setSymbol(t.getSymbol());
 				properTile.setType(t.getType());
-				properTile.setCounter(t.getCounter());
 				g.addTile(properTile);
 			}
 		}
@@ -279,37 +230,15 @@ public class Grid {
 		return a.getX() == b.getX() || a.getY() == b.getY();
 	}
 
-	public List<Grid> getQuadrants() {
-		List<Grid> gridList = new ArrayList<>();
-
-		int firstWidth = this.width / 2;
-		int firstHeight = this.height / 2;
-
-		List<Tile> tileList = this.tileList.stream()
-				.filter(tile -> tile.getX() < firstWidth && tile.getY() < firstHeight).toList();
-		Grid grid = Grid.fromList(tileList);
-		gridList.add(grid);
-
-		tileList = this.tileList.stream().filter(tile -> tile.getX() > firstWidth && tile.getY() < firstHeight)
-				.toList();
-		grid = Grid.fromList(tileList);
-		gridList.add(grid);
-
-		tileList = this.tileList.stream().filter(tile -> tile.getX() < firstWidth && tile.getY() > firstHeight)
-				.toList();
-		grid = Grid.fromList(tileList);
-		gridList.add(grid);
-
-		tileList = this.tileList.stream().filter(tile -> tile.getX() > firstWidth && tile.getY() > firstHeight)
-				.toList();
-		grid = Grid.fromList(tileList);
-		gridList.add(grid);
-
-		return gridList;
-	}
-	
-	@Override
-	public int hashCode() {
-		return this.toString().hashCode();
+	public static void swap(Tile a, Tile b) {
+		Tile temp = new Tile(b.getX(), b.getY());
+		temp.setSymbol(b.getSymbol());
+		temp.setType(b.getType());
+		
+		b.setSymbol(a.getSymbol());
+		b.setType(a.getType());
+		
+		a.setSymbol(temp.getSymbol());
+		a.setType(temp.getType());
 	}
 }

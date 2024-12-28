@@ -1,8 +1,9 @@
+package org.jksoft.utils.grid;
 
 public class GridVectorInt {
 	private int x;
 	private int y;
-
+	
 	public GridVectorInt(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -67,5 +68,21 @@ public class GridVectorInt {
 			return this.x == v.x && this.y == v.y;
 		}
 		return false;
+	}
+	
+	public static GridVectorInt up() {
+		return new GridVectorInt(0, -1);
+	}
+
+	public static GridVectorInt right() {
+		return new GridVectorInt(1, 0);
+	}
+
+	public static GridVectorInt down() {
+		return new GridVectorInt(0, 1);
+	}
+
+	public static GridVectorInt left() {
+		return new GridVectorInt(-1, 0);
 	}
 }

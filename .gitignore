@@ -6,3 +6,10 @@
 *.project
 */bin
 */target/*
+*/.settings
+*/.settings
+*/target
+grid/grid/.settings
+*/*/.settings
+*.jar
+*/*/target

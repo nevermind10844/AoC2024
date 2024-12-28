@@ -1,3 +1,4 @@
+package org.jksoft.utils.grid;
 
 public class GridVectorLong {
 	private long x;
