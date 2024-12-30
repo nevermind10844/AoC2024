@@ -35,7 +35,7 @@ public class Grid {
 		this.tileList.add(tile);
 	}
 
-	public Tile getTile(int index) {
+	public Tile getTile(int index) throws IndexOutOfBoundsException {
 		if (index < 0 || index >= this.tileList.size())
 			throw new IndexOutOfBoundsException("Index is out of bounds for index = %d with list of size %d"
 					.formatted(index, this.tileList.size()));
@@ -48,6 +48,10 @@ public class Grid {
 					"Index is out of bounds for x = %d and y = %d with grid of width %d and height %d".formatted(x, y,
 							this.width, this.height));
 		return this.getTile(y * this.width + x);
+	}
+	
+	public Tile getTile(GridVectorInt position) throws IndexOutOfBoundsException {
+		return this.getTile(position.getX(), position.getY());
 	}
 
 	public int getWidth() {
@@ -221,6 +225,14 @@ public class Grid {
 
 		return g;
 	}
+	
+	public boolean isEmpty(GridVectorInt position) {
+		return this.isEmpty(position.getX(), position.getY());
+	}
+	
+	public boolean isEmpty(int x, int y) {
+		return this.getTile(x, y).getType().equals(TileType.DOT);
+	}
 
 	public static Grid fromList(List<Tile> regionTiles) {
 		return fromList(regionTiles, 0);
@@ -240,5 +252,9 @@ public class Grid {
 		
 		a.setSymbol(temp.getSymbol());
 		a.setType(temp.getType());
+	}
+	
+	public static void swap(Grid grid, GridVectorInt a, GridVectorInt b) {
+		swap(grid.getTile(a), grid.getTile(b));
 	}
 }

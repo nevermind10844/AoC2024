@@ -7,20 +7,14 @@ public class Tile {
 	private int x;
 	private int y;
 	
-	private boolean topBorder;
-	private boolean rightBorder;
-	private boolean bottomBorder;
-	private boolean leftBorder;
+	private int externalId;
 	
 	public Tile(int x, int y) {
 		this.x = x;
 		this.y = y;
 		this.type = TileType.EMPTY;
 		this.symbol = TileType.EMPTY.getTileChar();
-		this.topBorder = false;
-		this.rightBorder = false;
-		this.bottomBorder = false;
-		this.leftBorder = false;
+		this.externalId = -1;
 	}
 	
 	public void setType(TileType type) {
@@ -46,41 +40,17 @@ public class Tile {
 	public void setSymbol(char symbol) {
 		this.symbol = symbol;
 	}
-	
-	public boolean isTopBorder() {
-		return topBorder;
+
+	public int getExternalId() {
+		return externalId;
 	}
 
-	public void setTopBorder(boolean topBorder) {
-		this.topBorder = topBorder;
-	}
-
-	public boolean isRightBorder() {
-		return rightBorder;
-	}
-
-	public void setRightBorder(boolean rightBorder) {
-		this.rightBorder = rightBorder;
-	}
-
-	public boolean isBottomBorder() {
-		return bottomBorder;
-	}
-
-	public void setBottomBorder(boolean bottomBorder) {
-		this.bottomBorder = bottomBorder;
-	}
-
-	public boolean isLeftBorder() {
-		return leftBorder;
-	}
-
-	public void setLeftBorder(boolean leftBorder) {
-		this.leftBorder = leftBorder;
+	public void setExternalId(int externalId) {
+		this.externalId = externalId;
 	}
 
 	@Override
 	public String toString() {
-		return "%s (%d::%d)".formatted(this.symbol, this.x, this.y);
+		return "%s (%d::%d) [%d]".formatted(this.symbol, this.x, this.y, this.externalId);
 	}
 }
