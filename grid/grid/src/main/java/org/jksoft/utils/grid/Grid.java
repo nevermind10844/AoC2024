@@ -246,12 +246,15 @@ public class Grid {
 		Tile temp = new Tile(b.getX(), b.getY());
 		temp.setSymbol(b.getSymbol());
 		temp.setType(b.getType());
+		temp.setExternalId(b.getExternalId());
 		
 		b.setSymbol(a.getSymbol());
 		b.setType(a.getType());
+		b.setExternalId(a.getExternalId());
 		
 		a.setSymbol(temp.getSymbol());
 		a.setType(temp.getType());
+		a.setExternalId(temp.getExternalId());
 	}
 	
 	public static void swap(Grid grid, GridVectorInt a, GridVectorInt b) {

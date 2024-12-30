@@ -4,7 +4,6 @@ import java.util.List;
 import org.jksoft.utils.grid.Grid;
 import org.jksoft.utils.grid.GridVectorInt;
 import org.jksoft.utils.grid.MappingConfiguration;
-import org.jksoft.utils.grid.Tile;
 import org.jksoft.utils.grid.TileType;
 import org.jksoft.utils.inputreader.InputReader;
 
@@ -12,8 +11,9 @@ public class Main {
 
 	public static void main(String[] args) {
 //		List<String> lines = InputReader.readInput();
-//		List<String> lines = InputReader.readTestInput();
-		List<String> lines = InputReader.readTestInput(2);
+		List<String> lines = InputReader.readTestInput();
+//		List<String> lines = InputReader.readTestInput(2);
+//		List<String> lines = InputReader.readTestInput(3);
 //		lines.forEach(System.out::println);
 		
 		List<String> mapLines = lines.stream().filter(line -> line.startsWith("#")).toList();
@@ -29,12 +29,15 @@ public class Main {
 		Warehouse warehouse = new Warehouse(map);
 		
 		System.out.println(warehouse);
-		
 		for (GridVectorInt movement : movements) {
-			warehouse.moveRobot(movement);
-			System.out.println(warehouse);
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+ 			warehouse.moveRobot(movement);
+ 			System.out.println(warehouse);
 		}
-		
 		
 		System.out.println(warehouse.getResult());
 	}

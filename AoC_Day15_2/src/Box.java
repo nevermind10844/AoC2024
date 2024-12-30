@@ -68,5 +68,15 @@ public class Box implements Movable {
 			}
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return """
+				Box [
+					A: %s
+					B: %s
+				]
+				""".formatted(this.position, GridVectorInt.add(this.position, GridVectorInt.right()));
+	}
 
 }

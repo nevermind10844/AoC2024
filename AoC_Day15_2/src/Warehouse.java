@@ -53,8 +53,11 @@ public class Warehouse {
 				Tile t = this.map.getTile(position);
 				if (t.getType().equals(TileType.HASH))
 					return false;
-				if (t.getType().equals(TileType.LETTER_A) || t.getType().equals(TileType.LETTER_B))
-					next.add(this.movableMap.get(t.getExternalId()));
+				if (t.getType().equals(TileType.LETTER_A) || t.getType().equals(TileType.LETTER_B)) {
+					Movable m = this.movableMap.get(t.getExternalId());
+					if(!next.contains(m))
+						next.add(m);
+				}
 			}
 		}
 
@@ -71,7 +74,7 @@ public class Warehouse {
 
 	public int getResult() {
 		int result = 0;
-		List<Tile> boxes = this.map.findTiles(TileType.STAR);
+		List<Tile> boxes = this.map.findTiles(TileType.LETTER_A);
 		for (Tile box : boxes) {
 			result += box.getY() * 100 + box.getX();
 		}
