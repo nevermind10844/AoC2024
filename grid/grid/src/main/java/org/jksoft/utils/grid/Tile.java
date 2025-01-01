@@ -53,4 +53,12 @@ public class Tile {
 	public String toString() {
 		return "%s (%d::%d) [%d]".formatted(this.symbol, this.x, this.y, this.externalId);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Tile t) {
+			return t.getX() == this.getX() && t.getY() == this.getY();
+		}
+		return false;
+	}
 }

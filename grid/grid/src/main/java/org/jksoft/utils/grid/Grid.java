@@ -141,7 +141,6 @@ public class Grid {
 				try {
 					type = configuration.getMapping(t.getSymbol());
 				} catch (NoSuchElementException unused) {
-					
 				}
 				if (type == null) {
 					try {
@@ -191,6 +190,21 @@ public class Grid {
 					sb.append(this.getTile(x, y).getType().getTileChar());
 				else
 					sb.append(TileType.EMPTY.getTileChar());
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
+	
+	public String highlightList(List<Tile> tiles) {
+		StringBuilder sb = new StringBuilder();
+		for (int y = 0; y < this.height; y++) {
+			for (int x = 0; x < this.width; x++) {
+				Tile t = this.getTile(x, y);
+				if (tiles.contains(t))
+					sb.append("*");
+				else
+					sb.append(t.getSymbol());
 			}
 			sb.append("\n");
 		}
