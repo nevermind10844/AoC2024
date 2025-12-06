@@ -9,6 +9,8 @@ public class Grid {
 	private int width;
 	private int height;
 	
+	private boolean diagonalNeighbors;
+	
 	private MappingConfiguration configuration;
 
 	public Grid(int width, int height) {
@@ -16,6 +18,7 @@ public class Grid {
 		this.width = width;
 		this.height = height;
 		this.configuration = null;
+		this.diagonalNeighbors = false;
 	}
 	
 	public Grid(int width, int height, MappingConfiguration configuration) {
@@ -23,6 +26,14 @@ public class Grid {
 		this.width = width;
 		this.height = height;
 		this.configuration = configuration;
+	}
+	
+	public void setDiagonalNeighbors(boolean diagonalNeighbors) {
+		this.diagonalNeighbors = diagonalNeighbors;
+	}
+	
+	public boolean getDiagonalNeighbors() {
+		return this.diagonalNeighbors;
 	}
 
 	public void addTile(Tile tile) {
@@ -76,15 +87,42 @@ public class Grid {
 		Tile neighbor = this.getNorthernNeighbor(tile);
 		if (neighbor != null)
 			neighbours.add(neighbor);
+		
+		if(this.diagonalNeighbors) {
+			neighbor = this.getNorthEasternNeighbor(tile);
+			if (neighbor != null)
+				neighbours.add(neighbor);
+		}
+		
 		neighbor = this.getEasternNeighbor(tile);
 		if (neighbor != null)
 			neighbours.add(neighbor);
+		
+		if(this.diagonalNeighbors) {
+			neighbor = this.getSouthEasternNeighbor(tile);
+			if (neighbor != null)
+				neighbours.add(neighbor);
+		}
+		
 		neighbor = this.getSouthernNeighbor(tile);
 		if (neighbor != null)
 			neighbours.add(neighbor);
+		
+		if(this.diagonalNeighbors) {
+			neighbor = this.getSouthWesternNeighbor(tile);
+			if (neighbor != null)
+				neighbours.add(neighbor);
+		}
+		
 		neighbor = this.getWesternNeighbor(tile);
 		if (neighbor != null)
 			neighbours.add(neighbor);
+		
+		if(this.diagonalNeighbors) {
+			neighbor = this.getNorthWesternNeighbor(tile);
+			if (neighbor != null)
+				neighbours.add(neighbor);
+		}
 
 		return neighbours;
 	}
@@ -123,6 +161,46 @@ public class Grid {
 		Tile neighbor = null;
 		try {
 			neighbor = this.getTile(tile.getX() - 1, tile.getY());
+		} catch (IndexOutOfBoundsException e) {
+			// System.out.println(e.getMessage());
+		}
+		return neighbor;
+	}
+	
+	public Tile getNorthEasternNeighbor(Tile tile) {
+		Tile neighbor = null;
+		try {
+			neighbor = this.getTile(tile.getX() + 1, tile.getY() - 1);
+		} catch (IndexOutOfBoundsException e) {
+			// System.out.println(e.getMessage());
+		}
+		return neighbor;
+	}
+	
+	public Tile getSouthEasternNeighbor(Tile tile) {
+		Tile neighbor = null;
+		try {
+			neighbor = this.getTile(tile.getX() + 1, tile.getY() + 1);
+		} catch (IndexOutOfBoundsException e) {
+			// System.out.println(e.getMessage());
+		}
+		return neighbor;
+	}
+	
+	public Tile getSouthWesternNeighbor(Tile tile) {
+		Tile neighbor = null;
+		try {
+			neighbor = this.getTile(tile.getX() - 1, tile.getY() + 1);
+		} catch (IndexOutOfBoundsException e) {
+			// System.out.println(e.getMessage());
+		}
+		return neighbor;
+	}
+	
+	public Tile getNorthWesternNeighbor(Tile tile) {
+		Tile neighbor = null;
+		try {
+			neighbor = this.getTile(tile.getX() - 1, tile.getY() - 1);
 		} catch (IndexOutOfBoundsException e) {
 			// System.out.println(e.getMessage());
 		}

@@ -16,7 +16,6 @@ public class MappingConfiguration {
 	}
 	
 	public TileType getMapping(char c) {
-		TileType t = null;
 		if(!this.mappingTable.containsKey(c))
 			throw new NoSuchElementException();
 		else
