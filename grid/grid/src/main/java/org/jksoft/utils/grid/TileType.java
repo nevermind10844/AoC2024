@@ -10,6 +10,7 @@ public enum TileType {
 	HASH('#'),
 	PLUS('+'),
 	AT('@'),
+	PIPE('|'),
 	LETTER_A('A'),
 	LETTER_B('B'),
 	LETTER_C('C'),
