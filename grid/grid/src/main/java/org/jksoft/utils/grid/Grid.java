@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class Grid {
-	private List<Tile> tileList;
+	private Tile[][] tileArray;
 	private int width;
 	private int height;
 	
@@ -14,18 +14,18 @@ public class Grid {
 	private MappingConfiguration configuration;
 
 	public Grid(int width, int height) {
-		this.tileList = new ArrayList<>();
 		this.width = width;
 		this.height = height;
 		this.configuration = null;
 		this.diagonalNeighbors = false;
+		this.tileArray = new Tile[this.width][this.height];
 	}
 	
 	public Grid(int width, int height, MappingConfiguration configuration) {
-		this.tileList = new ArrayList<>();
 		this.width = width;
 		this.height = height;
 		this.configuration = configuration;
+		this.tileArray = new Tile[this.width][this.height];
 	}
 	
 	public void setDiagonalNeighbors(boolean diagonalNeighbors) {
@@ -37,28 +37,11 @@ public class Grid {
 	}
 
 	public void addTile(Tile tile) {
-		int x = tile.getX();
-		int y = tile.getY();
-		if (x < 0 || y < 0 || x >= this.width || y >= this.height)
-			throw new IndexOutOfBoundsException(
-					"Index is out of bounds for x = %d and y = %d with grid of width %d and height %d".formatted(x, y,
-							this.width, this.height));
-		this.tileList.add(tile);
-	}
-
-	public Tile getTile(int index) throws IndexOutOfBoundsException {
-		if (index < 0 || index >= this.tileList.size())
-			throw new IndexOutOfBoundsException("Index is out of bounds for index = %d with list of size %d"
-					.formatted(index, this.tileList.size()));
-		return this.tileList.get(index);
+		this.tileArray[tile.getX()][tile.getY()] = tile;
 	}
 
 	public Tile getTile(int x, int y) throws IndexOutOfBoundsException {
-		if (x < 0 || y < 0 || x >= this.width || y >= this.height)
-			throw new IndexOutOfBoundsException(
-					"Index is out of bounds for x = %d and y = %d with grid of width %d and height %d".formatted(x, y,
-							this.width, this.height));
-		return this.getTile(y * this.width + x);
+		return this.tileArray[x][y];
 	}
 	
 	public Tile getTile(GridVectorInt position) throws IndexOutOfBoundsException {
@@ -71,14 +54,6 @@ public class Grid {
 
 	public int getHeight() {
 		return this.height;
-	}
-
-	public Tile findTile(TileType type) {
-		return this.tileList.stream().filter(tile -> tile.getType().equals(type)).findFirst().orElseThrow();
-	}
-
-	public List<Tile> findTiles(TileType type) {
-		return this.tileList.stream().filter(tile -> tile.getType().equals(type)).toList();
 	}
 
 	public List<Tile> getNeighbors(Tile tile) {
